@@ -18,6 +18,9 @@ import java.util.Scanner;
  * Class to work with view
  */
 public class Main {
+    /**
+     * Logger fields
+     */
     static final Logger rootLogger = LogManager.getRootLogger();
     static final Logger mainLogger = LogManager.getLogger(Main.class);
 
@@ -53,10 +56,11 @@ public class Main {
             int requestId = 0;
             switch (type) {
                 case (1):
-                    model = tokens[1];
-                    rentalTime = Integer.parseInt(tokens[2]);
-                    idPassport = tokens[3];
                     try {
+                        model = tokens[1];
+                        rentalTime = Integer.parseInt(tokens[2]);
+                        idPassport = tokens[3];
+
                         if (!daoClient.getClientById(idPassport)) {
                             System.out.println("Put this client in database.");
                             System.out.println("Enter client's data: <name> <residence_address>, <birth_date>");
@@ -83,7 +87,7 @@ public class Main {
 
                         daoRequest.insertRequest(request);
 
-                    } catch (DAOException e) {
+                    } catch (ArrayIndexOutOfBoundsException | DAOException e) {
                         mainLogger.error("Leave request exception. " + e.getMessage());
                     }
                     break;

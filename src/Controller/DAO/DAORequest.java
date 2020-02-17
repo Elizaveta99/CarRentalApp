@@ -19,6 +19,9 @@ import java.util.List;
 public class DAORequest extends DAO {
 
     static final Logger DAORequestLogger = LogManager.getLogger(DAOClient.class);
+    /**
+     * Requests to use in PreparedStatement
+     */
     private static final String insertRequestSQL = "INSERT INTO request (id, model, rental_time, id_passport) VALUES(?, ?, ?, ?)";
     private static final String deleteRequestSQL = "DELETE FROM request WHERE id = ?";
     private static final String getAllRequestsByModelSQL = "SELECT * FROM request WHERE model = ?";
@@ -30,6 +33,11 @@ public class DAORequest extends DAO {
         super();
     }
 
+    /**
+     * Inserts new request
+     * @param request
+     * @throws DAOException
+     */
     public static void insertRequest(Request request) throws DAOException {
         try {
             Connection conn = connector.getConn();
@@ -48,10 +56,15 @@ public class DAORequest extends DAO {
             DAORequestLogger.info("New request inserted successfully.");
 
         } catch (JDBCConnectionException | SQLException e) {
-            throw new DAOException("Insert request exception. ");
+            throw new DAOException("Insert request exception. " + e.getMessage());
         }
     }
 
+    /**
+     * Deletes request
+     * @param id
+     * @throws DAOException
+     */
     public static void deleteRequest(int id) throws DAOException {
         try {
             Connection conn = connector.getConn();
@@ -66,10 +79,16 @@ public class DAORequest extends DAO {
             DAORequestLogger.info("Request deleted successfully.");
 
         } catch (JDBCConnectionException | SQLException e) {
-            throw new DAOException("Delete request exception. ");
+            throw new DAOException("Delete request exception. " + e.getMessage());
         }
     }
 
+    /**
+     * Returns all requests by given model
+     * @param model
+     * @retur nall requests by model
+     * @throws DAOException
+     */
     public static List<Request> getAllRequestsByModel(String model) throws DAOException {
         List<Request> requests = new ArrayList<>();
         try {
@@ -90,12 +109,17 @@ public class DAORequest extends DAO {
             conn.close();
 
         } catch (JDBCConnectionException | SQLException e) {
-            throw new DAOException("Get all requests by model exception. ");
+            throw new DAOException("Get all requests by model exception. " + e.getMessage());
         }
         DAORequestLogger.info("Returned all requests by model successfully.");
         return requests;
     }
 
+    /**
+     * Returns all requests
+     * @return list of requests
+     * @throws DAOException
+     */
     public static List<Request> getAllRequests() throws DAOException {
         List<Request> requests = new ArrayList<>();
         try {
@@ -115,7 +139,7 @@ public class DAORequest extends DAO {
             conn.close();
 
         } catch (JDBCConnectionException | SQLException e) {
-            throw new DAOException("Get all requests exception. ");
+            throw new DAOException("Get all requests exception. " + e.getMessage());
         }
         DAORequestLogger.info("Returned all requests successfully.");
         return requests;

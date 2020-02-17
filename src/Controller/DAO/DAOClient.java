@@ -17,6 +17,9 @@ import java.sql.SQLException;
 public class DAOClient extends DAO {
 
     static final Logger DAOClientLogger = LogManager.getLogger(DAOClient.class);
+    /**
+     * Requests to use in PreparedStatement
+     */
     private static final String getClientByIdSQL = "SELECT * FROM client WHERE id_passport = ?";
     private static final String insertClientSQL = "INSERT INTO client (id_passport, name, residence_address, birth_date) VALUES (?, ?, ?, to_date(?, 'DD-MM-YYYY'))";
 
@@ -24,6 +27,12 @@ public class DAOClient extends DAO {
         super();
     }
 
+    /**
+     * Returns client by given id
+     * @param idPassport
+     * @return boolean - is client exists
+     * @throws DAOException
+     */
     public static boolean getClientById(String idPassport) throws DAOException {
         boolean clientExists = true;
         try {
@@ -39,14 +48,19 @@ public class DAOClient extends DAO {
             conn.close();
 
         } catch (JDBCConnectionException e) {
-            throw new DAOException("Get client by idPassport exception. ");
+            throw new DAOException("Get client by idPassport exception. " + e.getMessage());
         } catch (SQLException e) {
-            throw new DAOException("Get client by idPassport exception. ");
+            throw new DAOException("Get client by idPassport exception. " + e.getMessage());
         }
         DAOClientLogger.info("Returned client by id successfully.");
         return clientExists;
     }
 
+    /**
+     * Inserts new client
+     * @param client
+     * @throws DAOException
+     */
     public static void insertClient(Client client) throws DAOException {
         try {
             Connection conn = connector.getConn();
@@ -63,7 +77,7 @@ public class DAOClient extends DAO {
             DAOClientLogger.info("New client inserted successfully.");
 
         } catch (JDBCConnectionException | SQLException e) {
-            throw new DAOException("Insert client  exception. ");
+            throw new DAOException("Insert client  exception. " + e.getMessage());
         }
     }
 

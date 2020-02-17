@@ -20,10 +20,21 @@ import java.util.Properties;
  */
 public class DBConn {
 
+    /**
+     * Logger field
+     */
     static final Logger DBConnLogger = LogManager.getLogger(DBConn.class);
     private static Connection dbConnection = null;
+    /**
+     * Field with data to access database is stored
+     */
     private static final String path = "database.properties";
 
+    /**
+     * Creates connection with database
+     * @return connection
+     * @throws JDBCConnectionException
+     */
     public static Connection getConn() throws JDBCConnectionException {
         Properties prop = new Properties();
         try {
@@ -52,6 +63,10 @@ public class DBConn {
         return dbConnection;
     }
 
+    /**
+     * Closes connection
+     * @throws JDBCConnectionException
+     */
     public void closeConnection() throws JDBCConnectionException {
         if (dbConnection != null) {
             try {
