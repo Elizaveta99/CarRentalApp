@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+        <File name="file" fileName="logDebug.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+        <File name="file1" fileName="logErrors.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+        <File name="file2" fileName="logInfo.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name= "View.Main" level="error" additivity="false">
+            <AppenderRef ref="file1"/>
+        </Logger>
+        <Logger name= "Model.DBConn" level="info" additivity="false">
+            <AppenderRef ref="file2"/>
+        </Logger>
+        <Logger name= "Controller.DAO.DAOCar" level="info" additivity="false">
+            <AppenderRef ref="file2"/>
+        </Logger>
+        <Logger name= "Controller.DAO.DAOClient" level="info" additivity="false">
+            <AppenderRef ref="file2"/>
+        </Logger>
+        <Logger name= "Controller.DAO.DAORequest" level="info" additivity="false">
+            <AppenderRef ref="file2"/>
+        </Logger>
+        <!-- Root Logger -->
+        <Root level="trace">
+            <AppenderRef ref="file"/>
+        </Root>
+    </Loggers>
+
+
+</Configuration>

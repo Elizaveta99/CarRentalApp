@@ -2,10 +2,13 @@ package Controller.DAO;
 
 import Model.DBConn;
 
+/**
+ * Base class for DAO functionality
+ */
 public class DAO {
     protected static DBConn connector;
 
-    public DAO() { // add DAOExceptions?
+    public DAO() {
         connector = new DBConn();
     }
 

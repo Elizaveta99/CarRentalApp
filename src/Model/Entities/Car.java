@@ -24,11 +24,11 @@ public class Car {
         this.carModel = carModel;
     }
 
-    public boolean isCarState() {
-        return carState;
-    }
-
     public void setCarState(boolean carState) {
         this.carState = carState;
+    }
+
+    public boolean isCarState() {
+        return carState;
     }
 }

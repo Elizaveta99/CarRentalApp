@@ -3,6 +3,8 @@ package Controller.DAO;
 import Model.Entities.Request;
 import Model.Exception.DAOException;
 import Model.Exception.JDBCConnectionException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,11 +13,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to organize access to Request table and business logic with it
+ */
 public class DAORequest extends DAO {
 
+    static final Logger DAORequestLogger = LogManager.getLogger(DAOClient.class);
     private static final String insertRequestSQL = "INSERT INTO request (id, model, rental_time, id_passport) VALUES(?, ?, ?, ?)";
     private static final String deleteRequestSQL = "DELETE FROM request WHERE id = ?";
     private static final String getAllRequestsByModelSQL = "SELECT * FROM request WHERE model = ?";
+    private static final String getAllRequestsSQL = "SELECT * FROM request";
 
     private static int amountRequests = 0;
 
@@ -25,8 +32,7 @@ public class DAORequest extends DAO {
 
     public static void insertRequest(Request request) throws DAOException {
         try {
-            connector.getConn();
-            Connection conn = (Connection) connector.getConnection();
+            Connection conn = connector.getConn();
             PreparedStatement pstmt = conn.prepareStatement(insertRequestSQL);
             int id = amountRequests + 1;
             pstmt.setInt(1, id);
@@ -35,41 +41,39 @@ public class DAORequest extends DAO {
             pstmt.setString(4, request.getIdPassport());
             pstmt.executeUpdate();
             pstmt.close();
-            //conn.close(); or
-            connector.closeConnection();
+            conn.close();
             amountRequests++;
 
             System.out.println("New request inserted successfully.");
+            DAORequestLogger.info("New request inserted successfully.");
 
         } catch (JDBCConnectionException | SQLException e) {
-            throw new DAOException("Insert request exception.");
+            throw new DAOException("Insert request exception. ");
         }
     }
 
     public static void deleteRequest(int id) throws DAOException {
         try {
-            connector.getConn();
-            Connection conn = (Connection) connector.getConnection();
+            Connection conn = connector.getConn();
             PreparedStatement pstmt = conn.prepareStatement(deleteRequestSQL);
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
             pstmt.close();
-            //conn.close(); or
-            connector.closeConnection();
+            conn.close();
             amountRequests--;
 
             System.out.println("Request deleted successfully.");
+            DAORequestLogger.info("Request deleted successfully.");
 
         } catch (JDBCConnectionException | SQLException e) {
-            throw new DAOException("Delete request exception.");
+            throw new DAOException("Delete request exception. ");
         }
     }
 
     public static List<Request> getAllRequestsByModel(String model) throws DAOException {
         List<Request> requests = new ArrayList<>();
         try {
-            connector.getConn();
-            Connection conn = (Connection) connector.getConnection();
+            Connection conn = connector.getConn();
             PreparedStatement pstmt = conn.prepareStatement(getAllRequestsByModelSQL);
             pstmt.setString(1, model);
             ResultSet rs = pstmt.executeQuery();
@@ -83,12 +87,37 @@ public class DAORequest extends DAO {
             }
             rs.close();
             pstmt.close();
-            //conn.close(); or
-            connector.closeConnection();
+            conn.close();
 
         } catch (JDBCConnectionException | SQLException e) {
-            throw new DAOException("Get all requests exception.");
+            throw new DAOException("Get all requests by model exception. ");
         }
+        DAORequestLogger.info("Returned all requests by model successfully.");
+        return requests;
+    }
+
+    public static List<Request> getAllRequests() throws DAOException {
+        List<Request> requests = new ArrayList<>();
+        try {
+            Connection conn = connector.getConn();
+            PreparedStatement pstmt = conn.prepareStatement(getAllRequestsSQL);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()) {
+                Request request = new Request();
+                request.setId(rs.getInt(1));
+                request.setModel(rs.getString(2));
+                request.setRentalTime(rs.getInt(3));
+                request.setIdPassport(rs.getString(4));
+                requests.add(request);
+            }
+            rs.close();
+            pstmt.close();
+            conn.close();
+
+        } catch (JDBCConnectionException | SQLException e) {
+            throw new DAOException("Get all requests exception. ");
+        }
+        DAORequestLogger.info("Returned all requests successfully.");
         return requests;
     }
 
